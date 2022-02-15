@@ -2,7 +2,7 @@ const NFT = require('../models/nft');
 
 // Display home page
 exports.index = function (req, res) {
-  res.send('NOT IMPLEMENTED: Home page');
+  res.render('index', { title: 'NFT Inventory' })
 };
 
 // Display list of all NFTs.

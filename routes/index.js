@@ -30,7 +30,7 @@ router.get('/nft/:id/update', nftController.updateNftGet);
 router.post('/nft/:id/update', nftController.updateNftPost);
 
 // GET request for one NFT
-router.get('nft/:id', nftController.nftDetail);
+router.get('/nft/:id', nftController.nftDetail);
 
 // Get request for list of all NFTs
 router.get('/nfts', nftController.nftList);
@@ -57,7 +57,7 @@ router.get('/creator/:id/update', creatorController.updateCreatorGet);
 router.post('/creator/:id/update', creatorController.updateCreatorPost);
 
 // GET request for one Creator
-router.get('creator/:id', creatorController.creatorDetail);
+router.get('/creator/:id', creatorController.creatorDetail);
 
 // Get request for list of all Creators
 router.get('/creators', creatorController.creatorList);
@@ -84,7 +84,7 @@ router.get('/collection/:id/update', nftCollectionController.updateNftCollection
 router.post('/collection/:id/update', nftCollectionController.updateNftCollectionPost);
 
 // GET request for one NFT Collection
-router.get('collection/:id', nftCollectionController.nftCollectionDetail);
+router.get('/collection/:id', nftCollectionController.nftCollectionDetail);
 
 // Get request for list of all NFT Collections
 router.get('/collections', nftCollectionController.nftCollectionList);
