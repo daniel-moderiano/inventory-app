@@ -1,8 +1,28 @@
 const NFT = require('../models/nft');
+const Creator = require('../models/creator');
+const NftCollection = require('../models/nftCollection');
+const async = require('async');
 
 // Display home page
 exports.index = function (req, res) {
-  res.render('index', { title: 'NFT Inventory' })
+  // Count all documents of each type in async parralel, saving each as a key:value pair
+  async.parallel({
+    nftCount: function (callback) {
+      // An empty query is passed here to match all documents
+      NFT.countDocuments({}, callback);
+    },
+    creatorCount: function (callback) {
+      // An empty query is passed here to match all documents
+      Creator.countDocuments({}, callback);
+    },
+    nftCollectionCount: function (callback) {
+      // An empty query is passed here to match all documents
+      NftCollection.countDocuments({}, callback);
+    }
+  }, function (err, results) {
+    // Pass the results array above into the render template to display data
+    res.render('index', { title: 'NFT Inventory', error: err, data: results });
+  });
 };
 
 // Display list of all NFTs.

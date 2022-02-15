@@ -1,23 +1,33 @@
 <%- include('header')%>
 
-  <section class="py-5 text-center text-sm-start">
+  <section class="py-5 text-center text-sm-start bg-dark text-light">
     <div class="container">
       <div class="d-sm-flex align-items-center justify-content-between">
         <div>
           <h1>Dive into the wide world of <span class="title-nft text-primary">NFTs</span></h1>
           <p class="lead  my-4">NFT Inventory provides an easy entry into the NFT art space, showcasing some of the biggest collections from around the world!</p>
-          <button class="btn btn-primary btn-lg">Explore</button>
+          <a href="/nfts" class="btn btn-primary btn-lg">Explore</a>
         </div>
         <img class="img-fluid w-50 d-none d-sm-block" src="images/museum.svg" alt="Browsing artwork at a museum">
       </div>
     </div>
   </section>
 
-  <section class="bg-light text-light p-5">
-    <div class="container">
-      <div class="d-md-flex justify-content-between align-items-center">
-        <h3 class="mb-3 mb-md-0">Sign Up For Our Newsletter</h3>
-      </div>
+  <section class="p-5">
+    <div class="container py-4">
+      <h3 class="mb-4">At NFT Inventory, you'll find...</h3>
+      <% if (error) { %>
+        <p>Error getting inventory data</p>
+      <% } else { %>
+        <div class="d-md-flex justify-content-between align-items-center ">
+          <ul class="list-group-flush list-group py-2 border-top border-bottom border-light">
+            <li class="bg-dark text-light list-group-item lead"><%= data.nftCount %> NFTs</li>
+            <li class="bg-dark text-light list-group-item lead"><%= data.creatorCount %> Collections</li>
+            <li class="bg-dark text-light list-group-item lead"><%= data.nftCollectionCount %> Creators</li>
+          </ul>
+        </div>
+      <% } %>
     </div>
   </section>
+
 <%- include('footer')%>
