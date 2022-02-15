@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set static folder to serve images
+app.use(express.static('public'));
+
 // Use routes (in this case all stem from the index/home route. No need for separate route files)
 app.use('/', indexRouter);
 
