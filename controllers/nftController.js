@@ -1,5 +1,10 @@
 const NFT = require('../models/nft');
 
+// Display home page
+exports.index = function (req, res) {
+  res.send('NOT IMPLEMENTED: Home page');
+};
+
 // Display list of all NFTs.
 exports.nftList = function (req, res) {
   res.send('NOT IMPLEMENTED: NFT list');
