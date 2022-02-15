@@ -28,7 +28,7 @@ const nftcollections = []
 const nfts = []
 
 // Create a creator document, and save to the mongoDB collection 'creators'
-function creatorCreate(name, numberCreated) {
+function creatorCreate(name, numberCreated, cb) {
   creatordetail = { name: name }
   if (numberCreated) { creatordetail.numberCreated = numberCreated; }
   
@@ -46,7 +46,7 @@ function creatorCreate(name, numberCreated) {
 }
 
 // Create an NftCollection document, and save to the mongoDB collection 'nftcollections'
-function nftCollectionCreate(name, description, numberOfItems) {
+function nftCollectionCreate(name, description, numberOfItems, cb) {
   nftCollectiondetail = { name: name, description: description }
   if (numberOfItems) { nftCollectiondetail.numberOfItems = numberOfItems; }
   
@@ -64,22 +64,21 @@ function nftCollectionCreate(name, description, numberOfItems) {
 }
 
 // Create an nft document, and save to the mongoDB collection 'nfts'
-function nftCreate(name, description, creator, currentPrice, collection, imgUrl) {
+function nftCreate(name, description, creator, currentPrice, nftCollection, imgUrl, cb) {
   nftdetail = { 
     name: name,
     description: description,
-    cretor: creator,
-    collection: collection,
+    creator: creator,
+    nftCollection: nftCollection,
     currentPrice: currentPrice,
+    imgUrl: imgUrl,  // Include for now as empty string but update later
   }    
-  if (imgUrl) { nftdetail.imgUrl = imgUrl; }
     
   const nft = new NFT(nftdetail);    
 
   nft.save(function (err) {
     if (err) {
-      console.log('ERROR CREATING NFT: ' + nft);
-      cb(err, null)
+      console.log(err);
       return
     }
     console.log('New NFT: ' + nft);
@@ -124,22 +123,22 @@ function createNftCollections(cb) {
 function createNfts(cb) {
   async.parallel([
     function(callback) {
-      nftCreate('CryptoPunk #462', 'Male with sunglasses, cap forward, and a clown nose.', creators[1], 120, nftcollections[1], callback);
+      nftCreate('CryptoPunk #462', 'Male with sunglasses, cap forward, and a clown nose.', creators[1], 120, nftcollections[1], '', callback);
     },
     function(callback) {
-      nftCreate('CryptoPunk #1115', 'Female with wild white hair and hot lipstick.', creators[1], 7, nftcollections[1], callback);
+      nftCreate('CryptoPunk #1115', 'Female with wild white hair and hot lipstick.', creators[1], 7, nftcollections[1], '', callback);
     },
     function(callback) {
-      nftCreate('Long Lost #9959', 'Purple BG, striped hoodie, lost cap, small pupils, no tatoos, confused, red zombie.', creators[2], 2, nftcollections[2], callback);
+      nftCreate('Long Lost #9959', 'Purple BG, striped hoodie, lost cap, small pupils, no tatoos, confused, red zombie.', creators[2], 2, nftcollections[2], '', callback);
     },
     function(callback) {
-      nftCreate('Long Lost #6720', 'Yellow BG, green eye crew, portal eyes, greenghoul, dizzy, gold grills', creators[2], 18, nftcollections[2], callback);
+      nftCreate('Long Lost #6720', 'Yellow BG, green eye crew, portal eyes, greenghoul, dizzy, gold grills', creators[2], 18, nftcollections[2], '', callback);
     },
     function(callback) {
-      nftCreate('#7703', 'Orange BG, Bayc black tee, silver stud, sleepy, pink fur, fez.', creators[0], 105, nftcollections[0], callback);
+      nftCreate('#7703', 'Orange BG, Bayc black tee, silver stud, sleepy, pink fur, fez.', creators[0], 105, nftcollections[0], '', callback);
     },
     function(callback) {
-      nftCreate('#7202', 'Gray BG, blue dress, brown fur, angry, unshaved, halo.', creators[0], 106, nftcollections[0], callback);
+      nftCreate('#7202', 'Gray BG, blue dress, brown fur, angry, unshaved, halo.', creators[0], 106, nftcollections[0], '', callback);
     },
   ],
   // optional callback
@@ -155,11 +154,10 @@ async.series([
 // Optional callback
 function(err, results) {
   if (err) {
-      console.log('FINAL ERR: '+err);
+    console.log('FINAL ERR: '+err);
   }
   else {
-      console.log('BOOKInstances: '+bookinstances);
-      
+    console.log('Added data');
   }
   // All done, disconnect from database
   mongoose.connection.close();

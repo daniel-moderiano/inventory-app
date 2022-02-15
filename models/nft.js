@@ -6,9 +6,9 @@ const nftSchema = new Schema(
   {
     name: { type: String, required: true },
     description: { type: String, required: true }, // If description is left as an empty string, it will later be populater by 'created by ....'
-    creator: { type: Schema.Types.ObjectId, ref: 'Creator', required: true },
+    creator: { type: Schema.Types.ObjectId, ref: 'Creator', required: true  },
     currentPrice: { type: Number, required: true }, // Arbitrarily set and hardcoded, not calculated from some API. In ETH units
-    collection: { type: Schema.Types.ObjectId, ref: 'Collection', required: true },
+    nftCollection: { type: Schema.Types.ObjectId, ref: 'NftCollection', required: true },
     imgUrl: { type: String }, // To be implemented later, may even be combined below to make a virtual property
   } 
 );
