@@ -1,8 +1,15 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+body::before {
+  content: "";
+  display: block;
+  height: 60px;
 }
 
-a {
-  color: #00B7FF;
+.title-nft {
+  color: #3F3D56;
+}
+
+@media(min-width: 768px) {
+  .news-input {
+    width: 50% !important;
+  }
 }
