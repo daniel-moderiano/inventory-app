@@ -15,7 +15,7 @@ const creatorController = require('../controllers/creatorController');
 /* GET home page. */
 router.get('/', nftController.index);
 
-// POST home page
+// EXAMPLE for uploading images
 router.post('/', upload.single('uploaded_file'), function (req, res) {
   // req.file is the name of your file in the form above, here 'uploaded_file'
   // req.body will hold the text fields, if there were any 

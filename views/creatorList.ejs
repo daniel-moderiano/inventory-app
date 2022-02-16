@@ -1,0 +1,21 @@
+<%- include('header')%>
+
+  <section class="p-5">
+    <div class="container py-4">
+      <h2 class="mb-4"><%= title %></h2>
+      <% if (creatorList.length > 0) { %>
+        <ul class="list-group pt-3 pb-1 border-top border-bottom border-light rounded-0">
+          <% creatorList.forEach(creator => { %>
+            <li class="list-group-item bg-dark text-light mb-3 border-0">
+              <h3 class="h4"><a class="link-warning" href="creator<%= creator.url %>"><%= creator.name %></a></h3>
+              <p class="mb-0 lead"><%= creator.numberCreated %> NFTs created</p>
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p class="lead">There are no Creators</p>
+      <% } %>
+    </div>
+  </section>
+
+<%- include('footer')%>

@@ -2,7 +2,14 @@ const Creator = require('../models/creator');
 
 // Display list of all creators.
 exports.creatorList = function (req, res) {
-  res.send('NOT IMPLEMENTED: Creator list');
+  // Find all creator documents in db and sort by name
+  Creator.find({})
+    .sort({ name: 1 })
+    .exec(function (err, creatorList) {
+      if (err) { return next(err) }
+      // Successful, so render
+      res.render('creatorList', { title: 'Browse all Creators', creatorList: creatorList });
+    });
 };
 
 // Display details page for specific creator.
