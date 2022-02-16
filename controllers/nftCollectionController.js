@@ -23,7 +23,7 @@ exports.nftCollectionDetail = function (req, res, next) {
       NftCollection.findById(req.params.id)
         .exec(callback)
     },
-    ntfList: function (callback) {
+    nftList: function (callback) {
       // Find all NFTs with associated collection equal to this collection ID
       NFT.find({ 'nftCollection': req.params.id })
         .exec(callback)

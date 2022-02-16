@@ -5,16 +5,11 @@
       <div class="d-flex align-items-center">
         <h2 class="me-5"><%= title %></h2>
         <div class="d-flex">
-          <a href="/collection<%= nftCollection.url %>/update" class="lead pe-4 link-warning">Update</a>
-          <a href="/collection<%= nftCollection.url %>/delete" class="lead link-warning">Delete</a>
+          <a href="/collection<%= creator.url %>/update" class="lead pe-4 link-warning">Update</a>
+          <a href="/collection<%= creator.url %>/delete" class="lead link-warning">Delete</a>
         </div>
       </div>
-      <p class="lead"><%= nftCollection.numberOfItems %> items</p>
-      <div class="bg-dark text-light">
-        <div class="pt-2">
-          <p><%= nftCollection.description %></p>
-        </div>
-      </div>
+      <p class="lead"><%= creator.numberCreated %> items</p>
     </div>
   </section>
 

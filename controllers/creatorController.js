@@ -1,4 +1,6 @@
 const Creator = require('../models/creator');
+const async = require('async');
+const NFT = require('../models/nft');
 
 // Display list of all creators.
 exports.creatorList = function (req, res) {
@@ -14,7 +16,28 @@ exports.creatorList = function (req, res) {
 
 // Display details page for specific creator.
 exports.creatorDetail = function (req, res) {
-  res.send('NOT IMPLEMENTED: Creator detail: ' + req.params.id);
+  // Need to find not only the collection, but all NFTs in that collection
+  async.parallel({
+    creator: function (callback) {
+      // Find NFT collection by URL ID param
+      Creator.findById(req.params.id)
+        .exec(callback)
+    },
+    nftList: function (callback) {
+      // Find all NFTs with associated collection equal to this collection ID
+      NFT.find({ 'creator': req.params.id })
+        .exec(callback)
+    },
+  }, function (err, results) {
+    if (err) { return next(err) } // API error
+    if (results.NftCollection === null) {  // No results
+      const err = new Error('Collection not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('creatorDetail', { title: results.creator.name, creator: results.creator, nftList: results.nftList });
+  });
 };
 
 // Display form for adding new Creator on GET.
