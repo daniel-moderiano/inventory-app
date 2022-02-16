@@ -43,7 +43,7 @@ exports.nftCollectionDetail = function (req, res, next) {
 
 // Display form for adding new NFT collection on GET.
 exports.addNftCollectionGet = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection add GET');
+  res.render('collectionForm', { title: 'Add new Collection' });
 };
 
 // Handle adding new NFT collection on POST.

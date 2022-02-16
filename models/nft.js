@@ -11,8 +11,8 @@ const nftSchema = new Schema(
     nftCollection: { type: Schema.Types.ObjectId, ref: 'NftCollection', required: true },
     // Use multer middleware to get buffer data for uploaded images
     img: {
-      data: Buffer,
-      contentType: String,
+      data: { type: Buffer, required: true },
+      contentType: { type: String, required: true },
     },
   } 
 );

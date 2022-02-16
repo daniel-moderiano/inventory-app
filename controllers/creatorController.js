@@ -43,7 +43,7 @@ exports.creatorDetail = function (req, res) {
 
 // Display form for adding new Creator on GET.
 exports.addCreatorGet = function (req, res) {
-  res.send('NOT IMPLEMENTED: Creator add GET');
+  res.render('creatorForm', { title: 'Add new Creator' });
 };
 
 // Handle adding new Creator on POST.

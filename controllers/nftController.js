@@ -64,6 +64,19 @@ exports.addNftPost = function (req, res) {
   res.send('NOT IMPLEMENTED: NFT add POST');
 };
 
+// EXAMPLE for uploading images
+// router.post('/', upload.single('uploaded_file'), function (req, res) {
+//   // req.file is the name of your file in the form above, here 'uploaded_file'
+//   // req.body will hold the text fields, if there were any 
+//   // console.log(req);
+//   const data = fs.readFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}`));
+//   fs.writeFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}.txt`), data, (err) => {
+//     if (err) {console.log(err)}
+//   })
+//   console.log(data);
+//   res.send('Done');
+// });
+
 // Display Creator delete form on GET.
 exports.deleteNftGet = function(req, res) {
   res.send('NOT IMPLEMENTED: NFT delete GET');

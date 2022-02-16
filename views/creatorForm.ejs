@@ -1,0 +1,14 @@
+<%- include('header')%>
+  <section class="pt-5">
+    <div class="container">
+      <h2 class="mb-4"><%= title %></h2>
+      <form action="/" method="post" style="max-width: 30rem">
+        <div class="form-group mb-4">
+          <label for="name">Name</label>
+          <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter creator name">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </section>
+<%- include('footer')%>

@@ -4,12 +4,10 @@
     <div class="container py-4">
       <h2 class="mb-4"><%= title %></h2>
       <% if (collectionList.length > 0) { %>
-        <ul class="list-group pt-4 pb-3 border-top border-bottom border-light rounded-0">
+        <ul class="list-group pt-4 pb-2 border-top border-bottom border-light rounded-0">
           <% collectionList.forEach(collection => { %>
-            <li class="list-group-item bg-dark text-light mb-4 border-0">
+            <li class="list-group-item bg-dark text-light mb-3 border-0">
               <h3 class="h4"><a class="link-warning" href="collection<%= collection.url %>"><%= collection.name %></a></h3>
-              <p class="lead mb-1"><%= collection.numberOfItems %> items</p>
-              <p class="mb-0"><%= collection.description %></p>
             </li>
           <% }) %>
         </ul>

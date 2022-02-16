@@ -15,19 +15,6 @@ const creatorController = require('../controllers/creatorController');
 /* GET home page. */
 router.get('/', nftController.index);
 
-// EXAMPLE for uploading images
-router.post('/', upload.single('uploaded_file'), function (req, res) {
-  // req.file is the name of your file in the form above, here 'uploaded_file'
-  // req.body will hold the text fields, if there were any 
-  // console.log(req);
-  const data = fs.readFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}`));
-  fs.writeFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}.txt`), data, (err) => {
-    if (err) {console.log(err)}
-  })
-  console.log(data);
-  res.send('Done');
-});
-
 // GET request for creating NFT. NOTE This must come before routes that display NFT (otherwise the 'create' will be considered as ID in route params)
 router.get('/nft/create', nftController.addNftGet);
 
