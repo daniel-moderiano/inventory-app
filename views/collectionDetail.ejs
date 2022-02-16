@@ -1,0 +1,23 @@
+<%- include('header')%>
+
+  <section class="pt-5">
+    <div class="container">
+      <h2><%= title %></h2>
+      <p class="lead"><%= nftCollection.numberOfItems %> items</p>
+      <div class="bg-dark text-light">
+        <div class="pt-2">
+          <h3 class="h5">Description</h3>
+          <p><%= nftCollection.description %></p>
+        </div>
+
+        
+        <div class="d-flex mt-4">
+          <a href="/collection<%= nftCollection.url %>/update" class="lead pe-4 link-warning">Update</a>
+          <a href="/collection<%= nftCollection.url %>/delete" class="lead link-warning">Delete</a>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+<%- include('footer')%>

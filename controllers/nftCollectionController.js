@@ -1,4 +1,6 @@
 const NftCollection = require('../models/nftCollection');
+const NFT = require('../models/nft');
+const async = require('async');
 
 // Display list of all NFT collections.
 exports.nftCollectionList = function (req, res) {
@@ -13,8 +15,29 @@ exports.nftCollectionList = function (req, res) {
 };
 
 // Display details page for specific NFT collection.
-exports.nftCollectionDetail = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection detail: ' + req.params.id);
+exports.nftCollectionDetail = function (req, res, next) {
+  // Need to find not only the collection, but all NFTs in that collection
+  async.parallel({
+    nftCollection: function (callback) {
+      // Find NFT collection by URL ID param
+      NftCollection.findById(req.params.id)
+        .exec(callback)
+    },
+    ntfList: function (callback) {
+      // Find all NFTs with associated collection equal to this collection ID
+      NFT.find({ 'nftCollection': req.params.id })
+        .exec(callback)
+    },
+  }, function (err, results) {
+    if (err) { return next(err) } // API error
+    if (results.NftCollection === null) {  // No results
+      const err = new Error('Collection not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('collectionDetail', { title: results.nftCollection.name, nftCollection: results.nftCollection, nftList: results.nftList });
+  });
 };
 
 // Display form for adding new NFT collection on GET.
