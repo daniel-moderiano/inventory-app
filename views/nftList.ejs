@@ -1,0 +1,35 @@
+<%- include('header')%>
+
+  <section class="p-5">
+    <div class="container py-4">
+      <h2 class="mb-4"><%= title %></h2>
+      <% if (nftList.length > 0) { %>
+        <div class="row align-items-center justify-content-center g-4">
+            <% nftList.forEach(nft => { %>
+              <div class="col-md">
+                <div class="card bg-dark text-light border border-light" style="width: 18rem;">
+                  <img class="card-img-top" src="..." alt="Card image cap">
+                  <div class="card-body">
+                    <h5 class="card-title"><%= nft.name %></h5>
+                    <p class="card-text"><%= nft.description %></p>
+                  </div>
+                  <ul class="list-group list-group-flush">
+                    <li class="bg-dark text-light list-group-item">Creator: <%= nft.creator.name %></li>
+                    <li class="bg-dark text-light list-group-item">Collection: <%= nft.nftCollection.name %></li>
+                    <li class="bg-dark text-light list-group-item">Current price: <%= nft.currentPrice %> ETH</li>
+                  </ul>
+                  <div class="card-body">
+                    <a href="#" class="card-link">Update</a>
+                    <a href="#" class="card-link">Delete</a>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+      <% } else { %>
+        <p class="lead">There are no NFTs</p>
+      <% } %>
+    </div>
+  </section>
+
+<%- include('footer')%>

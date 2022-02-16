@@ -26,8 +26,18 @@ exports.index = function (req, res) {
 };
 
 // Display list of all NFTs.
-exports.nftList = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT list');
+exports.nftList = function (req, res, next) {
+  // Find all NFT documents in db and sort by name
+  NFT.find({})
+    .sort({ name: 1 })
+    .populate('creator')
+    .populate('nftCollection')
+    // Once the query is complete, chain the 'execute' function below to operate on the results. If an error occurs, you must pass to the next middleware in the chain with next. Since render ends the logic, no next is required
+    .exec(function (err, nftList) {
+      if (err) { return next(err) }
+      // Successful, so render
+      res.render('nftList', { title: 'Browse all NFTs', nftList: nftList });
+    });
 };
 
 // Display details page for specific NFT.
