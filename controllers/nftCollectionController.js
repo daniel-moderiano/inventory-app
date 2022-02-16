@@ -2,7 +2,14 @@ const NftCollection = require('../models/nftCollection');
 
 // Display list of all NFT collections.
 exports.nftCollectionList = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection list');
+  // Find all creator documents in db and sort by name
+  NftCollection.find({})
+    .sort({ name: 1 })
+    .exec(function (err, collectionList) {
+      if (err) { return next(err) }
+      // Successful, so render
+      res.render('collectionList', { title: 'Browse all Collections', collectionList: collectionList });
+    });
 };
 
 // Display details page for specific NFT collection.
