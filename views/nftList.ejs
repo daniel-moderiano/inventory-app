@@ -7,10 +7,11 @@
         <div class="row align-items-center justify-content-center g-4">
             <% nftList.forEach(nft => { %>
               <div class="col-md">
-                <div class="card bg-dark text-light border border-light" style="width: 18rem;">
-                  <img class="card-img-top" src="..." alt="Card image cap">
+                <div class="card bg-dark text-light" style="width: 18rem; box-shadow: 0 6.4px 14.4px 0 rgba(180, 180, 180, 0.13), 0 1.2px 3.6px 0 rgba(180, 180, 180, 0.11);">
+                  <img class="card-img-top" src="data:image/<%=nft.img.contentType%>;base64,
+                  <%=nft.img.data.toString('base64')%>" alt="Card image cap">
                   <div class="card-body">
-                    <h5 class="card-title"><%= nft.name %></h5>
+                    <h5 class="card-title"><a class="link-light" href="nft<%= nft.url %>"><%= nft.name %></a></h5>
                     <p class="card-text"><%= nft.description %></p>
                   </div>
                   <ul class="list-group list-group-flush">
@@ -19,8 +20,8 @@
                     <li class="bg-dark text-light list-group-item">Current price: <%= nft.currentPrice %> ETH</li>
                   </ul>
                   <div class="card-body">
-                    <a href="#" class="card-link">Update</a>
-                    <a href="#" class="card-link">Delete</a>
+                    <a href="nft<%= nft.url %>/update" class="card-link">Update</a>
+                    <a href="nft<%= nft.url %>/delete" class="card-link">Delete</a>
                   </div>
                 </div>
               </div>

@@ -3,6 +3,7 @@ const Creator = require('../models/creator');
 const NftCollection = require('../models/nftCollection');
 const async = require('async');
 
+
 // Display home page
 exports.index = function (req, res) {
   // Count all documents of each type in async parralel, saving each as a key:value pair

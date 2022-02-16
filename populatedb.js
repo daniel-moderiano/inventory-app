@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 
+
 console.log('This script populates some test books, authors, genres and bookinstances to your database. Specified database as argument - e.g.: populatedb mongodb+srv://cooluser:coolpassword@cluster0.a9azn.mongodb.net/local_library?retryWrites=true');
 
 // Get arguments passed on command line
@@ -13,7 +14,9 @@ if (!userArgs[0].startsWith('mongodb')) {
 const async = require('async')
 const NftCollection = require('./models/nftCollection')
 const Creator = require('./models/creator')
-const NFT = require('./models/nft')
+const NFT = require('./models/nft');
+const fs = require('fs');
+const path = require('path');
 
 
 const mongoose = require('mongoose');
@@ -64,14 +67,18 @@ function nftCollectionCreate(name, description, numberOfItems, cb) {
 }
 
 // Create an nft document, and save to the mongoDB collection 'nfts'
-function nftCreate(name, description, creator, currentPrice, nftCollection, imgUrl, cb) {
+function nftCreate(name, description, creator, currentPrice, nftCollection, cb) {
+  const data = fs.readFileSync(path.resolve(__dirname, 'public/data/uploads/231c5695028cc3840df43bb1529cb0da.txt'));
   nftdetail = { 
     name: name,
     description: description,
     creator: creator,
     nftCollection: nftCollection,
     currentPrice: currentPrice,
-    imgUrl: imgUrl,  // Include for now as empty string but update later
+    img: {
+      data: data,
+      contentType: 'image/png'
+    },  // Include for now as empty array but update later
   }    
     
   const nft = new NFT(nftdetail);    
@@ -123,22 +130,22 @@ function createNftCollections(cb) {
 function createNfts(cb) {
   async.parallel([
     function(callback) {
-      nftCreate('CryptoPunk #462', 'Male with sunglasses, cap forward, and a clown nose.', creators[1], 120, nftcollections[1], '', callback);
+      nftCreate('CryptoPunk #462', 'Male with sunglasses, cap forward, and a clown nose.', creators[1], 120, nftcollections[1], callback);
     },
     function(callback) {
-      nftCreate('CryptoPunk #1115', 'Female with wild white hair and hot lipstick.', creators[1], 7, nftcollections[1], '', callback);
+      nftCreate('CryptoPunk #1115', 'Female with wild white hair and hot lipstick.', creators[1], 7, nftcollections[1], callback);
     },
     function(callback) {
-      nftCreate('Long Lost #9959', 'Purple BG, striped hoodie, lost cap, small pupils, no tatoos, confused, red zombie.', creators[2], 2, nftcollections[2], '', callback);
+      nftCreate('Long Lost #9959', 'Purple BG, striped hoodie, lost cap, small pupils, no tatoos, confused, red zombie.', creators[2], 2, nftcollections[2], callback);
     },
     function(callback) {
-      nftCreate('Long Lost #6720', 'Yellow BG, green eye crew, portal eyes, greenghoul, dizzy, gold grills', creators[2], 18, nftcollections[2], '', callback);
+      nftCreate('Long Lost #6720', 'Yellow BG, green eye crew, portal eyes, greenghoul, dizzy, gold grills', creators[2], 18, nftcollections[2], callback);
     },
     function(callback) {
-      nftCreate('#7703', 'Orange BG, Bayc black tee, silver stud, sleepy, pink fur, fez.', creators[0], 105, nftcollections[0], '', callback);
+      nftCreate('#7703', 'Orange BG, Bayc black tee, silver stud, sleepy, pink fur, fez.', creators[0], 105, nftcollections[0], callback);
     },
     function(callback) {
-      nftCreate('#7202', 'Gray BG, blue dress, brown fur, angry, unshaved, halo.', creators[0], 106, nftcollections[0], '', callback);
+      nftCreate('#7202', 'Gray BG, blue dress, brown fur, angry, unshaved, halo.', creators[0], 106, nftcollections[0], callback);
     },
   ],
   // optional callback

@@ -9,7 +9,11 @@ const nftSchema = new Schema(
     creator: { type: Schema.Types.ObjectId, ref: 'Creator', required: true  },
     currentPrice: { type: Number, required: true }, // Arbitrarily set and hardcoded, not calculated from some API. In ETH units
     nftCollection: { type: Schema.Types.ObjectId, ref: 'NftCollection', required: true },
-    imgUrl: { type: String }, // To be implemented later, may even be combined below to make a virtual property
+    // Use multer middleware to get buffer data for uploaded images
+    img: {
+      data: Buffer,
+      contentType: String,
+    },
   } 
 );
 
