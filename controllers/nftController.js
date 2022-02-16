@@ -2,7 +2,7 @@ const NFT = require('../models/nft');
 const Creator = require('../models/creator');
 const NftCollection = require('../models/nftCollection');
 const async = require('async');
-
+const { body, validationResult } = require("express-validator");
 
 // Display home page
 exports.index = function (req, res) {
@@ -55,8 +55,8 @@ exports.nftDetail = function (req, res) {
 };
 
 // Display form for adding new NFT on GET.
-exports.addNftGet = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT add GET');
+exports.addNftGet = function (req, res, next) {
+  res.render('nftForm', { title: 'Add NFT' });
 };
 
 // Handle adding new NFT on POST.

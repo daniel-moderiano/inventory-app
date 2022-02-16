@@ -1,6 +1,7 @@
 const Creator = require('../models/creator');
 const async = require('async');
 const NFT = require('../models/nft');
+const { body, validationResult } = require("express-validator");
 
 // Display list of all creators.
 exports.creatorList = function (req, res) {

@@ -1,6 +1,7 @@
 const NftCollection = require('../models/nftCollection');
 const NFT = require('../models/nft');
 const async = require('async');
+const { body, validationResult } = require("express-validator");
 
 // Display list of all NFT collections.
 exports.nftCollectionList = function (req, res) {
