@@ -43,7 +43,15 @@ exports.nftList = function (req, res, next) {
 
 // Display details page for specific NFT.
 exports.nftDetail = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT detail: ' + req.params.id);
+  // Find NFT document by URL ID param
+  NFT.findById(req.params.id)
+    .populate('creator')
+    .populate('nftCollection')
+    .exec(function (err, nft) {
+      if (err) { return next(err) }
+      // Successful, so render
+      res.render('nftDetail', { title: nft.name, nft: nft });
+    });
 };
 
 // Display form for adding new NFT on GET.

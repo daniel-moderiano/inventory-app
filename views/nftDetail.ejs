@@ -1,0 +1,32 @@
+<%- include('header')%>
+
+  <section class="pt-5">
+    <div class="container">
+      <h2 class="mb-4"><%= nft.name %></h2>
+      <div class="bg-dark text-light">
+        <img class="img-fluid" src="data:image/<%=nft.img.contentType%>;base64,
+        <%=nft.img.data.toString('base64')%>" alt="NFT" style="width: 20rem;">
+        <p class="h4  pt-4">Current price: <span class="text-warning"><%= nft.currentPrice %> Ξ</span></p>
+        <div class="nft-text pt-3">
+          <h3 class="h5">Description</h3>
+          <p><%= nft.description %> </p>
+        </div>
+        <div class="nft-text">
+          <h3 class="h5">Collection</h3>
+          <p><a class="link-light" href="/collection<%= nft.nftCollection.url %>"><%= nft.nftCollection.name %></a></p>
+        </div>
+        <div class="nft-text">
+          <h3 class="h5">Creator</h3>
+          <p><a class="link-light" href="/creator<%= nft.creator.url %>"><%= nft.creator.name %></a></p>
+        </div>
+
+        <div class="d-flex mt-4">
+          <a href="/nft<%= nft.url %>/update" class="lead pe-4 link-warning">Update</a>
+          <a href="/nft<%= nft.url %>/delete" class="lead link-warning">Delete</a>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+<%- include('footer')%>
