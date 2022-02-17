@@ -47,9 +47,46 @@ exports.addCreatorGet = function (req, res) {
 };
 
 // Handle adding new Creator on POST.
-exports.addCreatorPost = function (req, res) {
-  res.send('NOT IMPLEMENTED: Creator add POST');
-};
+exports.addCreatorPost = [
+  // Validate and sanitise the name field
+  body('name', 'Creator name required').trim().isLength({ min: 1 }).escape(),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new Creator object with data
+    const creator = new Creator(
+      { name: req.body.name }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitisez values and error messages
+      res.render('creatorForm', { title: 'Add new Creator', creator: creator, errors: errors.array() })
+    } else {
+      // Data from form is valid
+      // Check if creator with that name already exists
+      Creator.findOne({ 'name': req.body.name })
+        .exec(function (err, creatorFound) {
+          if (err) { return next(err) }
+
+          if (creatorFound) {
+            // Creator with that name already exists, redirect to its detail page
+            res.redirect(`/creator${creatorFound.url}`);
+          } else {
+            // No duplicate found, create and save new Creator to db
+            creator.save(function (err) {
+              if (err) { return next(err) }
+              // Creator saved, redirect to it's (new) detail page
+              res.redirect(`/creator${creator.url}`);
+            });
+          }
+        });
+    }
+  }
+];
 
 // Display Creator delete form on GET.
 exports.deleteCreatorGet = function(req, res) {
