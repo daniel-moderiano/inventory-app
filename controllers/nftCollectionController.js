@@ -47,9 +47,49 @@ exports.addNftCollectionGet = function (req, res) {
 };
 
 // Handle adding new NFT collection on POST.
-exports.addNftCollectionPost = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection add POST');
-};
+exports.addNftCollectionPost = [
+  // Validate and sanitise fields
+  body('name', 'Collection name is required').trim().isLength({ min: 1 }).escape(),
+  body('description', 'Description is required').trim().isLength({ min: 1 }).escape(),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new Collection object with data
+    const nftCollection = new NftCollection (
+      { 
+        name: req.body.name,
+        description: req.body.description, 
+      }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitisez values and error messages
+      res.render('collectionForm', { title: 'Add new Creator', nftCollection: nftCollection, errors: errors.array() })
+    } else {
+      // Data from form is valid
+      // Check if collection with that name already exists
+      NftCollection.findOne({ 'name': req.body.name })
+        .exec(function (err, nftCollectionFound) {
+          if (err) { return next(err) }
+          if (nftCollectionFound) {
+            // Collection with that name already exists, redirect to its detail page
+            res.redirect(`/collection${nftCollectionFound.url}`);
+          } else {
+            // No duplicate found, create and save new Collection to db
+            nftCollection.save(function (err) {
+              if (err) { return next(err) }
+              // Collection saved, redirect to it's (new) detail page
+              res.redirect(`/collection${nftCollection.url}`);
+            });
+          }
+        });
+    }
+  }
+];
 
 // Display NFT collection delete form on GET.
 exports.deleteNftCollectionGet = function(req, res) {
