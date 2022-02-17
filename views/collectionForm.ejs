@@ -5,14 +5,22 @@
       <form action="" method="post" style="max-width: 30rem">
         <div class="form-group mb-4">
           <label for="name">Name</label>
-          <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter collection name">
+          <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter collection name" value="<%= locals.nftCollection === undefined ? '' : locals.nftCollection.name %>">
         </div>
         <div class="form-group mb-4">
           <label for="description">Description</label>
-          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3"></textarea>
+          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3" value="<%= locals.nftCollection === undefined ? '' : locals.nftCollection.description %>"></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+      <% if (locals.errors) { %>
+        <ul class="list-group">
+          <% errors.forEach(error => { %>
+            <li class="list-group-item"><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      <% } %>
     </div>
   </section>
 <%- include('footer')%>

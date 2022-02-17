@@ -50,7 +50,8 @@ exports.addNftCollectionGet = function (req, res) {
 exports.addNftCollectionPost = [
   // Validate and sanitise fields
   body('name', 'Collection name is required').trim().isLength({ min: 1 }).escape(),
-  body('description', 'Description is required').trim().isLength({ min: 1 }).escape(),
+  // Chain separate withMessage call for min and max to customise message
+  body('description').trim().isLength({ min: 2 }).withMessage('Description is required').isLength({ max: 600 }).withMessage('Description is too long (600 character max)').escape(),
 
   // Process request after input data has been validated and sanitised
   (req, res, next) => {
