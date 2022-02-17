@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const multer  = require('multer')
-const upload = multer({ dest: './public/data/uploads/' });
 const fs = require('fs');
 const path = require('path');
 
@@ -9,6 +8,8 @@ const path = require('path');
 const nftController = require('../controllers/nftController');
 const nftCollectionController = require('../controllers/nftCollectionController');
 const creatorController = require('../controllers/creatorController');
+
+
 
 /// NFT ROUTES ///
 

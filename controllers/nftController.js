@@ -3,6 +3,34 @@ const Creator = require('../models/creator');
 const NftCollection = require('../models/nftCollection');
 const async = require('async');
 const { body, validationResult } = require("express-validator");
+const multer  = require('multer');
+
+// Setup memory storage for Multer. Files won't be physically saved to a directory, but will be held in memory buffer temporarily
+const storage = multer.memoryStorage();
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype === "image/png"
+//   ) {
+//     cb(null, true);
+//   } else {
+//     cb(new Error("File format should be PNG,JPG,JPEG"), false); // if validation failed then generate error
+//   }
+// }
+// Define the Multer parameters for image upload. Call this upload function in routers below as needed
+const upload = multer({ storage : storage });
+
+// EXAMPLE for uploading images
+// router.post('/', upload.single('img'), function (req, res) {
+//   // req.file is the name of your file in the form above, here 'uploaded_file'
+//   // req.body will hold the text fields, if there were any 
+//   const buffer = req.file.buffer;
+//   console.log(buffer);
+//   // const data = fs.readFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}`));
+//   // fs.writeFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}.txt`), data, (err) => {
+//   //   if (err) {console.log(err)}
+//   // })
+//   res.send('Done');
+// });
 
 // Display home page
 exports.index = function (req, res) {
@@ -60,22 +88,70 @@ exports.addNftGet = function (req, res, next) {
 };
 
 // Handle adding new NFT on POST.
-exports.addNftPost = function (req, res) {
-  res.send('NOT IMPLEMENTED: NFT add POST');
-};
+exports.addNftPost = [
+  // Extract relevant file upload data
+  upload.single('img'),
 
-// EXAMPLE for uploading images
-// router.post('/', upload.single('uploaded_file'), function (req, res) {
-//   // req.file is the name of your file in the form above, here 'uploaded_file'
-//   // req.body will hold the text fields, if there were any 
-//   // console.log(req);
-//   const data = fs.readFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}`));
-//   fs.writeFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}.txt`), data, (err) => {
-//     if (err) {console.log(err)}
-//   })
-//   console.log(data);
-//   res.send('Done');
-// });
+  // Validate and sanitise fields
+  body('name', 'NFT name is required').trim().isLength({ min: 1 }).escape(),
+  body('description').trim().isLength({ min: 1 }).withMessage('Description is required').isLength({ max: 100 }).withMessage('Description is too long (100 character max)').escape(),
+  // Consider sanitising input by matchign regex pattern that first digit is not zero
+  body('currentPrice').trim().isLength({ min: 1 }).withMessage('Current price is required').matches(/^[1-9][0-9]$/).withMessage('Price must be a whole number > 0').escape(),
+
+  body('img').custom((value, { req }) => {
+    // Check file mimetype is PNG. Do not use extension as the user can simply edit this manually
+    if (req.file.mimetype !== 'image/png') {
+      // Throw error to satisfy non-valid criteria for validator function
+      throw new Error('Please upload a PNG');
+    }
+    // Image is PNG, return truthy value to satisfy validation
+    return true;
+  }),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new NFT object with data
+    const nft = new NFT (
+      { 
+        name: req.body.name,
+        description: req.body.description, 
+        currentPrice: req.body.currentPrice,
+        img: {
+          data: req.file.buffer,
+          contentType: req.file.mimetype,
+        }
+      }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitisez values and error messages
+      res.render('nftForm', { title: 'Add new NFT', nft: nft, errors: errors.array() })
+    } else {
+      // Data from form is valid
+      // Check if collection with that name already exists
+      NFT.findOne({ 'name': req.body.name })
+        .exec(function (err, nftFound) {
+          if (err) { return next(err) }
+          if (nftFound) {
+            // NFT with that name already exists, redirect to its detail page
+            res.redirect(`/nft${nftFound.url}`);
+          } else {
+            // No duplicate found, create and save new NFT to db
+            // nft.save(function (err) {
+            //   if (err) { return next(err) }
+            //   // Collection saved, redirect to it's (new) detail page
+            //   res.redirect(`/nft${nft.url}`);
+            // });
+            res.send(nft);
+          }
+        });
+    }
+  }
+];
 
 // Display Creator delete form on GET.
 exports.deleteNftGet = function(req, res) {

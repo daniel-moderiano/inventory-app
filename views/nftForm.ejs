@@ -6,20 +6,24 @@
       <form action="" method="post" enctype="multipart/form-data" style="max-width: 30rem">
         <div class="form-group mb-4">
           <label for="name">Name</label>
-          <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter NFT name">
+          <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter NFT name" value="<%= locals.nft === undefined ? '' : locals.nft.name %>">
         </div>
         <div class="form-group mb-4">
           <label for="description">Description</label>
-          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3"></textarea>
+          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3" ><%= locals.nft === undefined ? '' : locals.nft.description %></textarea>
         </div>
         <div class="form-group mb-4">
+          <label for="currentPrice">Current price</label>
+          <input required type="number" class="form-control bg-dark text-light" id="currentPrice" name="currentPrice" placeholder="Enter current price in ETH" value="<%= locals.nft === undefined ? '' : locals.nft.currentPrice %>">
+        </div>
+        <!-- <div class="form-group mb-4">
           <label for="creator">Creator</label>
-          <input required type="text" class="form-control bg-dark text-light" id="creator" name="creator" placeholder="Enter NFT creator name">
+          <input required type="text" class="form-control bg-dark text-light" id="creator" name="creator" placeholder="Select NFT creator">
         </div>
         <div class="form-group mb-4">
-          <label for="nftCollection">Name</label>
-          <input required type="text" class="form-control bg-dark text-light" id="nftCollection" name="nftCollection" placeholder="Enter NFT name">
-        </div>
+          <label for="nftCollection">Collection</label>
+          <input required type="text" class="form-control bg-dark text-light" id="nftCollection" name="nftCollection" placeholder="Select NFT collection">
+        </div> -->
         <div class="form-group d-flex flex-column mb-4">
           <label for="img">NFT image</label>
           <input required type="file" class="form-control-file" name="img" id="img">     
@@ -27,6 +31,14 @@
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+      <% if (locals.errors) { %>
+        <ul class="list-group">
+          <% errors.forEach(error => { %>
+            <li class="list-group-item"><%= error.msg %></li>
+          <% }) %>
+        </ul>
+      <% } %>
     </div>
   </section>
 <%- include('footer')%>
