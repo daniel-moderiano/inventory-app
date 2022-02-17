@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const CreatorSchema = new Schema(
   {
     name: { type: String, required: true },
-    numberCreated: { type: Number } // will be calculated by finding all NFTs with this creator ID
   } 
 );
 

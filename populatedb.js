@@ -31,9 +31,8 @@ const nftcollections = []
 const nfts = []
 
 // Create a creator document, and save to the mongoDB collection 'creators'
-function creatorCreate(name, numberCreated, cb) {
+function creatorCreate(name, cb) {
   creatordetail = { name: name }
-  if (numberCreated) { creatordetail.numberCreated = numberCreated; }
   
   const creator = new Creator(creatordetail);
        
@@ -49,9 +48,8 @@ function creatorCreate(name, numberCreated, cb) {
 }
 
 // Create an NftCollection document, and save to the mongoDB collection 'nftcollections'
-function nftCollectionCreate(name, description, numberOfItems, cb) {
+function nftCollectionCreate(name, description, cb) {
   nftCollectiondetail = { name: name, description: description }
-  if (numberOfItems) { nftCollectiondetail.numberOfItems = numberOfItems; }
   
   const nftCollection = new NftCollection(nftCollectiondetail);
        
@@ -97,13 +95,13 @@ function nftCreate(name, description, creator, currentPrice, nftCollection, imgD
 function createCreators(cb) {
   async.series([
     function(callback) {
-      creatorCreate('BoredApeYachtClub', 10000, callback);
+      creatorCreate('BoredApeYachtClub', callback);
     },
     function(callback) {
-      creatorCreate('Larva Labs', 10000, callback);
+      creatorCreate('Larva Labs', callback);
     },
     function(callback) {
-      creatorCreate('TheLongLost', 10000, callback)
+      creatorCreate('TheLongLost', callback)
     },
   ],
   // optional callback
@@ -113,13 +111,13 @@ function createCreators(cb) {
 function createNftCollections(cb) {
   async.series([
     function(callback) {
-      nftCollectionCreate('Bored Ape Yacht Club', "The Bored Ape Yacht Club is a collection of 10,000 unique Bored Ape NFTs— unique digital collectibles living on the Ethereum blockchain. Your Bored Ape doubles as your Yacht Club membership card, and grants access to members-only benefits, the first of which is access to THE BATHROOM, a collaborative graffiti board. Future areas and perks can be unlocked by the community through roadmap activation. Visit www.BoredApeYachtClub.com for more details.", 10000, callback);
+      nftCollectionCreate('Bored Ape Yacht Club', "The Bored Ape Yacht Club is a collection of 10,000 unique Bored Ape NFTs— unique digital collectibles living on the Ethereum blockchain. Your Bored Ape doubles as your Yacht Club membership card, and grants access to members-only benefits, the first of which is access to THE BATHROOM, a collaborative graffiti board. Future areas and perks can be unlocked by the community through roadmap activation. Visit www.BoredApeYachtClub.com for more details.", callback);
     },
     function(callback) {
-      nftCollectionCreate('CryptoPunks', "CryptoPunks launched as a fixed set of 10,000 items in mid-2017 and became one of the inspirations for the ERC-721 standard. They have been featured in places like The New York Times, Christie;'s of London, Art|Basel Miami, and The PBS NewsHour.", 10000, callback);
+      nftCollectionCreate('CryptoPunks', "CryptoPunks launched as a fixed set of 10,000 items in mid-2017 and became one of the inspirations for the ERC-721 standard. They have been featured in places like The New York Times, Christie;'s of London, Art|Basel Miami, and The PBS NewsHour.", callback);
     },
     function(callback) {
-      nftCollectionCreate('The Long Lost', "Long Lost is a 10,000 piece genesis collection from the '5th Dimension Collective.'", 10000, callback);
+      nftCollectionCreate('The Long Lost', "Long Lost is a 10,000 piece genesis collection from the '5th Dimension Collective.'", callback);
     },
   ],
   // optional callback
