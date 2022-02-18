@@ -11,9 +11,9 @@
       </form>
 
       <% if (locals.errors) { %>
-        <ul class="list-group">
+        <ul class="list-group mt-4">
           <% errors.forEach(error => { %>
-            <li class="list-group-item"><%= error.msg %></li>
+            <li class="list-group-item bg-dark text-danger border-danger">! <%= error.msg %></li>
           <% }) %>
         </ul>
       <% } %>

@@ -3,7 +3,7 @@
     <div class="container">
       <h2 class="mb-4"><%= title %></h2>
 
-      <form action="" method="post" style="max-width: 30rem">
+      <form action="" method="post" <%= locals.update ? '' : 'enctype=multipart/form-data' %>  style="max-width: 30rem">
         <div class="form-group mb-4">
           <label for="name">Name</label>
           <input required type="text" class="form-control bg-dark text-light" id="name" name="name" placeholder="Enter NFT name" value="<%= locals.nft === undefined ? '' : locals.nft.name %>">
@@ -75,9 +75,9 @@
       </form>
 
       <% if (locals.errors) { %>
-        <ul class="list-group">
+        <ul class="list-group mt-4">
           <% errors.forEach(error => { %>
-            <li class="list-group-item"><%= error.msg %></li>
+            <li class="list-group-item bg-dark text-danger border-danger">! <%= error.msg %></li>
           <% }) %>
         </ul>
       <% } %>
