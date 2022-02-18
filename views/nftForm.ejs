@@ -40,7 +40,7 @@
         </div>
 
         <div class="form-group mb-4">
-          <label for="nftCollection">Select creator</label>
+          <label for="nftCollection">Select collection</label>
           <select name="nftCollection" id="nftCollection" class="form-select bg-dark text-light" placeholder='Select collection' required='true' >
             <% collections.sort(function (a, b) {
               let textA = a.name.toUpperCase(); 
@@ -51,7 +51,7 @@
               <% if (locals.nft) { %>
                 <option 
                   value="<%= collection._id %>" 
-                  <%= collection._id.toString() === locals.nft.nftCollection.toString() ? 'selected' : '' %>
+                  <%= collection._id.toString() === locals.nft.nftCollection._id.toString() ? 'selected' : '' %>
                 ><%= collection.name %>
                 </option>
               <% } else { %>
@@ -61,10 +61,14 @@
           </select>
         </div>
 
-        <div class="form-group d-flex flex-column mb-4">
-          <label for="img">NFT image</label>
-          <input required type="file" class="form-control-file" name="img" id="img">     
-        </div>
+        <% if (locals.update) { %>
+          <p class="small">Note: NFT image cannot be modified. Delete and add new NFT to change image.</p>
+        <% } else { %>
+          <div class="form-group d-flex flex-column mb-4">
+            <label for="img">NFT image</label>
+            <input required type="file" class="form-control-file" name="img" id="img">     
+          </div>
+        <% } %>
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>

@@ -180,7 +180,27 @@ exports.deleteNftPost = function(req, res, next) {
 
 // Display Creator update form on GET.
 exports.updateNftGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT update GET');
+  // Get all creators and collections associated with the NFT
+  async.parallel({
+    nft: function (callback) {
+      NFT.findById(req.params.id).populate('creator').populate('nftCollection').exec(callback);
+    },
+    creators: function (callback) {
+      Creator.find(callback);
+    },
+    nftCollections: function (callback) {
+      NftCollection.find(callback);
+    },
+  }, function (err, results) {
+    if (err) { return next(err); }
+    if (results.nft === null) { // No results
+      const err = new Error('NFT not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Success, render update form with update param (this will ensure the image field is not available)
+    res.render('nftForm', { title: 'Update NFT', creators: results.creators, collections: results.nftCollections, nft: results.nft, update: true });
+  });
 };
 
 // Handle Creator update on POST.
