@@ -94,12 +94,49 @@ exports.addNftCollectionPost = [
 
 // Display NFT collection delete form on GET.
 exports.deleteNftCollectionGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection delete GET');
+  // Find both the collection in question, and any NFTs in the collection
+  async.parallel({
+    nftCollection: function (callback) {
+      NftCollection.findById(req.params.id).exec(callback);
+    },
+    collectionsNfts: function (callback) {
+      NFT.find({ 'nftCollection': req.params.id }).exec(callback);
+    },
+  }, function (err, results) {
+    if (err) { return next(err) }
+    if (results.nftCollection === null) { // No results, so nothing to delete.
+      res.redirect('/collections');
+    }
+    // Successful, so render
+    res.render('collectionDelete', { title: `Delete Collection '${results.nftCollection.name}'`, collection: results.nftCollection, collectionsNfts: results.collectionsNfts })
+  })
 };
 
 // Handle NFT collection delete on POST.
 exports.deleteNftCollectionPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection delete POST');
+   // Find both the collection in question, and any NFTs in the collection
+   async.parallel({
+    nftCollection: function (callback) {
+      NftCollection.findById(req.body.collectionid).exec(callback);
+    },
+    collectionsNfts: function (callback) {
+      NFT.find({ 'nftCollection': req.body.collectionid }).exec(callback);
+    },
+  },function (err, results) {
+    if (err) { return next(err) }
+    // Success
+    if (results.collectionsNfts.length > 0) {
+      // Collection still has NFTs remaining. Render in same way as for GET route
+      res.render('collectionDelete', { title: `Delete Collection '${results.nftCollection.name}'`, collection: results.nftCollection, collectionsNfts: results.collectionsNfts })
+    } else {
+      // Creator has no remaining NFTs. Delete from db and redirect to list of creators
+      NftCollection.findByIdAndRemove(req.body.collectionid, function deleteCollection (err) { // Callback is named for clarity
+        if (err) { return next(err); }
+        // Success, go to collection list
+        res.redirect('/collections');
+      })
+    }
+  });
 };
 
 // Display NFT collection update form on GET.

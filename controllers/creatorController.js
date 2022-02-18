@@ -114,10 +114,10 @@ exports.deleteCreatorPost = function(req, res, next) {
   // Find both the creator in question, and any NFTs the creator has created/is associated with
   async.parallel({
     creator: function (callback) {
-      Creator.findById(req.body.creatorid.toString()).exec(callback);
+      Creator.findById(req.body.creatorid).exec(callback);
     },
     creatorsNfts: function (callback) {
-      NFT.find({ 'creator': req.body.creatorid.toString() }).exec(callback);
+      NFT.find({ 'creator': req.body.creatorid }).exec(callback);
     },
   }, function (err, results) {
     if (err) { return next(err) }
@@ -127,7 +127,7 @@ exports.deleteCreatorPost = function(req, res, next) {
       res.render('creatorDelete', { title: `Delete Creator '${results.creator.name}'`, creator: results.creator, creatorsNfts: results.creatorsNfts })
     } else {
       // Creator has no remaining NFTs. Delete from db and redirect to list of creators
-      Creator.findByIdAndRemove(req.body.creatorid.toString(), function deleteCreator (err) {
+      Creator.findByIdAndRemove(req.body.creatorid, function deleteCreator (err) {
         if (err) { return next(err); }
         // Success, go to creator list
         res.redirect('/creators');
