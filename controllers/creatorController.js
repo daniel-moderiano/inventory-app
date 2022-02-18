@@ -138,10 +138,49 @@ exports.deleteCreatorPost = function(req, res, next) {
 
 // Display Creator update form on GET.
 exports.updateCreatorGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: Creator update GET');
+  // Find NFT collection by URL ID param
+  Creator.findById(req.params.id, function (err, creator) {
+    if (err) { return next(err) } // API error
+    if (creator === null) {  // No results
+      const err = new Error('Creator not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('creatorForm', { title: 'Update Creator', creator: creator });
+  });
 };
 
 // Handle Creator update on POST.
-exports.updateCreatorPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: Creator update POST');
-};
+exports.updateCreatorPost = [
+  // Validate and sanitise the name field
+  body('name', 'Creator name required').trim().isLength({ min: 1 }).escape(),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new Creator object with data
+    const creator = new Creator(
+      { 
+        name: req.body.name, 
+        _id: req.params.id,
+      }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitisez values and error messages
+      res.render('creatorForm', { title: 'Add new Creator', creator: creator, errors: errors.array() })
+    } else {
+      // Data from form is valid. Update the record
+      
+      Creator.findByIdAndUpdate(req.params.id, creator, {}, function (err, updatedCreator) {
+        if (err) { return next(err) }
+        // Successful, redirect to creator detail page
+        res.redirect(`/creator${updatedCreator.url}`);
+      });
+    }
+  }
+];
