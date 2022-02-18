@@ -1,0 +1,16 @@
+<%- include('header')%>
+
+  <section class="pt-5">
+    <div class="container">
+      <h2 class="mb-4"><%= title %></h2>
+      <p>Do you really want to delete this NFT?</p>
+      <form action="" method="post">
+        <div class="form-group">
+          <input type="hidden" id="nftid" name="nftid" required value="<%= nft._id %>" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </form>
+    </div>
+  </section>
+
+<%- include('footer')%>

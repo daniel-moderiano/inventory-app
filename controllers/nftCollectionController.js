@@ -4,7 +4,7 @@ const async = require('async');
 const { body, validationResult } = require("express-validator");
 
 // Display list of all NFT collections.
-exports.nftCollectionList = function (req, res) {
+exports.nftCollectionList = function (req, res, next) {
   // Find all creator documents in db and sort by name
   NftCollection.find({})
     .sort({ name: 1 })
@@ -93,7 +93,7 @@ exports.addNftCollectionPost = [
 ];
 
 // Display NFT collection delete form on GET.
-exports.deleteNftCollectionGet = function(req, res) {
+exports.deleteNftCollectionGet = function(req, res, next) {
   // Find both the collection in question, and any NFTs in the collection
   async.parallel({
     nftCollection: function (callback) {
@@ -113,7 +113,7 @@ exports.deleteNftCollectionGet = function(req, res) {
 };
 
 // Handle NFT collection delete on POST.
-exports.deleteNftCollectionPost = function(req, res) {
+exports.deleteNftCollectionPost = function(req, res, next) {
    // Find both the collection in question, and any NFTs in the collection
    async.parallel({
     nftCollection: function (callback) {

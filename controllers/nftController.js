@@ -48,7 +48,7 @@ exports.nftList = function (req, res, next) {
 };
 
 // Display details page for specific NFT.
-exports.nftDetail = function (req, res) {
+exports.nftDetail = function (req, res, next) {
   // Find NFT document by URL ID param
   NFT.findById(req.params.id)
     .populate('creator')
@@ -85,7 +85,7 @@ exports.addNftPost = [
   // Validate and sanitise fields
   body('name', 'NFT name is required').trim().isLength({ min: 1 }).escape(),
   body('description').trim().isLength({ min: 1 }).withMessage('Description is required').isLength({ max: 100 }).withMessage('Description is too long (100 character max)').escape(),
-  body('currentPrice').trim().isLength({ min: 1 }).withMessage('Current price is required').matches(/^[1-9][0-9]$/).withMessage('Price must be a whole number > 0').escape(),
+  body('currentPrice').trim().isLength({ min: 1 }).withMessage('Current price is required').matches(/^[1-9][0-9]*$/).withMessage('Price must be a whole number > 0').escape(),
   body('creator', 'Creator must not be empty.').trim().isLength({ min: 1 }).escape(),
   body('nftCollection', 'Collection must not be empty.').trim().isLength({ min: 1 }).escape(),
 
@@ -158,13 +158,24 @@ exports.addNftPost = [
 ];
 
 // Display Creator delete form on GET.
-exports.deleteNftGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT delete GET');
+exports.deleteNftGet = function(req, res, next) {
+  // Find NFT document by URL ID param
+  NFT.findById(req.params.id)
+    .exec(function (err, nft) {
+      if (err) { return next(err) }
+      // Successful, so render
+      res.render('nftDelete', { title: `Delete NFT '${nft.name}'`, nft: nft });
+    });
 };
 
 // Handle Creator delete on POST.
-exports.deleteNftPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT delete POST');
+exports.deleteNftPost = function(req, res, next) {
+  // No associated deletes are necessary with NFTs, delete immediately
+  NFT.findByIdAndRemove(req.body.nftid, function deleteNFT (err) {
+    if (err) { return next(err); }
+    // Success, go to NFT list
+    res.redirect('/nfts');
+  })
 };
 
 // Display Creator update form on GET.
