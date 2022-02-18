@@ -9,7 +9,7 @@
         </div>
         <div class="form-group mb-4">
           <label for="description">Description</label>
-          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3" value="<%= locals.nftCollection === undefined ? '' : locals.nftCollection.description %>"></textarea>
+          <textarea required class="form-control bg-dark text-light" id="description" name="description" rows="3"><%= locals.nftCollection === undefined ? '' : locals.nftCollection.description %></textarea>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>

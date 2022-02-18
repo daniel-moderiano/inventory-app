@@ -175,7 +175,6 @@ exports.updateCreatorPost = [
       res.render('creatorForm', { title: 'Add new Creator', creator: creator, errors: errors.array() })
     } else {
       // Data from form is valid. Update the record
-      
       Creator.findByIdAndUpdate(req.params.id, creator, {}, function (err, updatedCreator) {
         if (err) { return next(err) }
         // Successful, redirect to creator detail page

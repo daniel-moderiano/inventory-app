@@ -141,10 +141,50 @@ exports.deleteNftCollectionPost = function(req, res, next) {
 
 // Display NFT collection update form on GET.
 exports.updateNftCollectionGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection update GET');
+  // Find NFT collection by URL ID param
+  NftCollection.findById(req.params.id, function (err, nftCollection) {
+    if (err) { return next(err) } // API error
+    if (nftCollection === null) {  // No results
+      const err = new Error('Creator not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful, so render
+    res.render('collectionForm', { title: 'Update Collection', nftCollection: nftCollection });
+  });
 };
 
 // Handle NFT collection update on POST.
-exports.updateNftCollectionPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT collection update POST');
-};
+exports.updateNftCollectionPost = [
+  // Validate and sanitise the name field
+  body('name', 'Creator name required').trim().isLength({ min: 1 }).escape(),
+  body('description').trim().isLength({ min: 1 }).withMessage('Description is required').isLength({ max: 600 }).withMessage('Description is too long (600 character max)').escape(),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new Collection object with data
+    const nftCollection = new NftCollection (
+      { 
+        name: req.body.name,
+        description: req.body.description, 
+        _id: req.params.id,
+      }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitisez values and error messages
+      res.render('creatorForm', { title: 'Add new Creator', creator: creator, errors: errors.array() })
+    } else {
+      // Data from form is valid. Update the record
+      NftCollection.findByIdAndUpdate(req.params.id, nftCollection, {}, function (err, updatedCollection) {
+        if (err) { return next(err) }
+        // Successful, redirect to creator detail page
+        res.redirect(`/collection${updatedCollection.url}`);
+      });
+    }
+  }
+];
