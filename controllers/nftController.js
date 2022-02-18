@@ -84,19 +84,32 @@ exports.nftDetail = function (req, res) {
 
 // Display form for adding new NFT on GET.
 exports.addNftGet = function (req, res, next) {
-  res.render('nftForm', { title: 'Add NFT' });
+  // Get all creators and collections to add to the new NFT
+  async.parallel({
+    creators: function (callback) {
+      Creator.find(callback);
+    },
+    nftCollections: function (callback) {
+      NftCollection.find(callback);
+    },
+  }, function (err, results) {
+    if (err) { return next(err); }
+    // Success, so render GET form with db values above
+    res.render('nftForm', { title: 'Add NFT', creators: results.creators, collections: results.nftCollections });
+  })
 };
 
 // Handle adding new NFT on POST.
 exports.addNftPost = [
-  // Extract relevant file upload data
+  // Upload file with Multer. This will create a 'req.file' object that can be validated below before buffer data is added to db
   upload.single('img'),
 
   // Validate and sanitise fields
   body('name', 'NFT name is required').trim().isLength({ min: 1 }).escape(),
   body('description').trim().isLength({ min: 1 }).withMessage('Description is required').isLength({ max: 100 }).withMessage('Description is too long (100 character max)').escape(),
-  // Consider sanitising input by matchign regex pattern that first digit is not zero
   body('currentPrice').trim().isLength({ min: 1 }).withMessage('Current price is required').matches(/^[1-9][0-9]$/).withMessage('Price must be a whole number > 0').escape(),
+  body('creator', 'Creator must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('nftCollection', 'Collection must not be empty.').trim().isLength({ min: 1 }).escape(),
 
   body('img').custom((value, { req }) => {
     // Check file mimetype is PNG. Do not use extension as the user can simply edit this manually
@@ -120,6 +133,8 @@ exports.addNftPost = [
         name: req.body.name,
         description: req.body.description, 
         currentPrice: req.body.currentPrice,
+        creator: req.body.creator,
+        nftCollection: req.body.nftCollection,
         img: {
           data: req.file.buffer,
           contentType: req.file.mimetype,
@@ -128,8 +143,20 @@ exports.addNftPost = [
     );
 
     if (!errors.isEmpty()) {
-      // There are errors. Render the form again with sanitisez values and error messages
-      res.render('nftForm', { title: 'Add new NFT', nft: nft, errors: errors.array() })
+      // There are errors. Render the form again with sanitised values and error messages
+      // Get all creators and collections to add to the new NFT
+      async.parallel({
+        creators: function (callback) {
+          Creator.find(callback);
+        },
+        nftCollections: function (callback) {
+          NftCollection.find(callback);
+        },
+      }, function (err, results) {
+        if (err) { return next(err); }
+        // Success, so render GET form with db values above and errors array
+        res.render('nftForm', { title: 'Add NFT', creators: results.creators, collections: results.nftCollections, nft: nft, errors: errors.array() });
+      })
     } else {
       // Data from form is valid
       // Check if collection with that name already exists

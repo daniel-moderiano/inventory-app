@@ -16,14 +16,51 @@
           <label for="currentPrice">Current price</label>
           <input required type="number" class="form-control bg-dark text-light" id="currentPrice" name="currentPrice" placeholder="Enter current price in ETH" value="<%= locals.nft === undefined ? '' : locals.nft.currentPrice %>">
         </div>
-        <!-- <div class="form-group mb-4">
-          <label for="creator">Creator</label>
-          <input required type="text" class="form-control bg-dark text-light" id="creator" name="creator" placeholder="Select NFT creator">
-        </div>
+
         <div class="form-group mb-4">
-          <label for="nftCollection">Collection</label>
-          <input required type="text" class="form-control bg-dark text-light" id="nftCollection" name="nftCollection" placeholder="Select NFT collection">
-        </div> -->
+          <label for="creator">Select creator</label>
+          <select name="creator" id="creator" class="form-select bg-dark text-light" placeholder='Select creator' required='true' >
+            <% creators.sort(function (a, b) {
+              let textA = a.name.toUpperCase(); 
+              let textB = b.name.toUpperCase(); 
+              return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            }) %> 
+            <% creators.forEach(creator => { %>
+              <% if (locals.nft) { %>
+                <option 
+                  value="<%= creator._id %>" 
+                  <%= creator._id.toString() === locals.nft.creator.toString() ? 'selected' : '' %>
+                ><%= creator.name %>
+                </option>
+              <% } else { %>
+                <option value="<%= creator._id %>"><%= creator.name %></option>
+              <% } %>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="nftCollection">Select creator</label>
+          <select name="nftCollection" id="nftCollection" class="form-select bg-dark text-light" placeholder='Select collection' required='true' >
+            <% collections.sort(function (a, b) {
+              let textA = a.name.toUpperCase(); 
+              let textB = b.name.toUpperCase(); 
+              return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+            }) %> 
+            <% collections.forEach(collection => { %>
+              <% if (locals.nft) { %>
+                <option 
+                  value="<%= collection._id %>" 
+                  <%= collection._id.toString() === locals.nft.nftCollection.toString() ? 'selected' : '' %>
+                ><%= collection.name %>
+                </option>
+              <% } else { %>
+                <option value="<%= collection._id %>"><%= collection.name %></option>
+              <% } %>
+            <% }) %>
+          </select>
+        </div>
+
         <div class="form-group d-flex flex-column mb-4">
           <label for="img">NFT image</label>
           <input required type="file" class="form-control-file" name="img" id="img">     
