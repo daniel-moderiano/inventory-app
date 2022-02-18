@@ -3,12 +3,12 @@ const Creator = require('../models/creator');
 const NftCollection = require('../models/nftCollection');
 const async = require('async');
 const { body, validationResult } = require("express-validator");
-const multer  = require('multer');
+const multer = require('multer');
 
 // Setup memory storage for Multer. Files won't be physically saved to a directory, but will be held in memory buffer temporarily
 const storage = multer.memoryStorage();
 // Define the Multer parameters for image upload. Call this upload function in routers below as needed
-const upload = multer({ storage : storage });
+const upload = multer({ storage: storage });
 
 // Display home page
 exports.index = function (req, res) {
@@ -106,10 +106,10 @@ exports.addNftPost = [
     const errors = validationResult(req);
 
     // Create new NFT object with data
-    const nft = new NFT (
-      { 
+    const nft = new NFT(
+      {
         name: req.body.name,
-        description: req.body.description, 
+        description: req.body.description,
         currentPrice: req.body.currentPrice,
         creator: req.body.creator,
         nftCollection: req.body.nftCollection,
@@ -158,7 +158,7 @@ exports.addNftPost = [
 ];
 
 // Display Creator delete form on GET.
-exports.deleteNftGet = function(req, res, next) {
+exports.deleteNftGet = function (req, res, next) {
   // Find NFT document by URL ID param
   NFT.findById(req.params.id)
     .exec(function (err, nft) {
@@ -169,9 +169,9 @@ exports.deleteNftGet = function(req, res, next) {
 };
 
 // Handle Creator delete on POST.
-exports.deleteNftPost = function(req, res, next) {
+exports.deleteNftPost = function (req, res, next) {
   // No associated deletes are necessary with NFTs, delete immediately
-  NFT.findByIdAndRemove(req.body.nftid, function deleteNFT (err) {
+  NFT.findByIdAndRemove(req.body.nftid, function deleteNFT(err) {
     if (err) { return next(err); }
     // Success, go to NFT list
     res.redirect('/nfts');
@@ -179,7 +179,7 @@ exports.deleteNftPost = function(req, res, next) {
 };
 
 // Display Creator update form on GET.
-exports.updateNftGet = function(req, res) {
+exports.updateNftGet = function (req, res, next) {
   // Get all creators and collections associated with the NFT
   async.parallel({
     nft: function (callback) {
@@ -204,6 +204,54 @@ exports.updateNftGet = function(req, res) {
 };
 
 // Handle Creator update on POST.
-exports.updateNftPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: NFT update POST');
-};
+exports.updateNftPost = [
+  // Validate and sanitise fields
+  body('name', 'NFT name is required').trim().isLength({ min: 1 }).escape(),
+  body('description').trim().isLength({ min: 1 }).withMessage('Description is required').isLength({ max: 100 }).withMessage('Description is too long (100 character max)').escape(),
+  body('currentPrice').trim().isLength({ min: 1 }).withMessage('Current price is required').matches(/^[1-9][0-9]*$/).withMessage('Price must be a whole number > 0').escape(),
+  body('creator', 'Creator must not be empty.').trim().isLength({ min: 1 }).escape(),
+  body('nftCollection', 'Collection must not be empty.').trim().isLength({ min: 1 }).escape(),
+
+  // Process request after input data has been validated and sanitised
+  (req, res, next) => {
+
+    // Extract the validation errors from a request
+    const errors = validationResult(req);
+
+    // Create new NFT object with data
+    const nft = new NFT(
+      {
+        name: req.body.name,
+        description: req.body.description,
+        currentPrice: req.body.currentPrice,
+        creator: req.body.creator,
+        nftCollection: req.body.nftCollection,
+        _id: req.params.id,
+      }
+    );
+
+    if (!errors.isEmpty()) {
+      // There are errors. Render the form again with sanitised values and error messages
+      // Get all creators and collections to add to the new NFT
+      async.parallel({
+        creators: function (callback) {
+          Creator.find(callback);
+        },
+        nftCollections: function (callback) {
+          NftCollection.find(callback);
+        },
+      }, function (err, results) {
+        if (err) { return next(err); }
+        // Success, so render GET form with db values above and errors array
+        res.render('nftForm', { title: 'Update NFT', creators: results.creators, collections: results.nftCollections, nft: nft, errors: errors.array() });
+      })
+    } else {
+      // Data from form is valid. Update the record
+      NFT.findByIdAndUpdate(req.params.id, nft, {}, function (err, updatedNFT) {
+        if (err) { return next(err) }
+        // Successful, redirect to NFT detail page
+        res.redirect(`/nft${updatedNFT.url}`);
+      });
+    }
+  }
+];
