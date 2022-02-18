@@ -168,12 +168,11 @@ exports.addNftPost = [
             res.redirect(`/nft${nftFound.url}`);
           } else {
             // No duplicate found, create and save new NFT to db
-            // nft.save(function (err) {
-            //   if (err) { return next(err) }
-            //   // Collection saved, redirect to it's (new) detail page
-            //   res.redirect(`/nft${nft.url}`);
-            // });
-            res.send(nft);
+            nft.save(function (err) {
+              if (err) { return next(err) }
+              // Collection saved, redirect to it's (new) detail page
+              res.redirect(`/nft${nft.url}`);
+            });
           }
         });
     }
