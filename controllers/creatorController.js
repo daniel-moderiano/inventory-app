@@ -90,7 +90,22 @@ exports.addCreatorPost = [
 
 // Display Creator delete form on GET.
 exports.deleteCreatorGet = function(req, res) {
-  res.send('NOT IMPLEMENTED: Creator delete GET');
+  // Find both the creator in question, and any NFTs the creator has created/is associated with
+  async.parallel({
+    creator: function (callback) {
+      Creator.findById(req.params.id).exec(callback);
+    },
+    creatorsNfts: function (callback) {
+      NFT.find({ 'creator': req.params.id }).exec(callback);
+    },
+  }, function (err, results) {
+    if (err) { return next(err) }
+    if (results.creator === null) { // No results, so nothing to delete.
+      res.redirect('/creators');
+    }
+    // Successful, so render
+    res.render('creatorDelete', { title: `Delete Creator '${results.creator.name}'`, creator: results.creator, creatorsNfts: results.creatorsNfts })
+  })
 };
 
 // Handle Creator delete on POST.

@@ -7,30 +7,8 @@ const multer  = require('multer');
 
 // Setup memory storage for Multer. Files won't be physically saved to a directory, but will be held in memory buffer temporarily
 const storage = multer.memoryStorage();
-// const fileFilter = (req, file, cb) => {
-//   if (
-//     file.mimetype === "image/png"
-//   ) {
-//     cb(null, true);
-//   } else {
-//     cb(new Error("File format should be PNG,JPG,JPEG"), false); // if validation failed then generate error
-//   }
-// }
 // Define the Multer parameters for image upload. Call this upload function in routers below as needed
 const upload = multer({ storage : storage });
-
-// EXAMPLE for uploading images
-// router.post('/', upload.single('img'), function (req, res) {
-//   // req.file is the name of your file in the form above, here 'uploaded_file'
-//   // req.body will hold the text fields, if there were any 
-//   const buffer = req.file.buffer;
-//   console.log(buffer);
-//   // const data = fs.readFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}`));
-//   // fs.writeFileSync(path.resolve(__dirname, `../public/data/uploads/${req.file.filename}.txt`), data, (err) => {
-//   //   if (err) {console.log(err)}
-//   // })
-//   res.send('Done');
-// });
 
 // Display home page
 exports.index = function (req, res) {
