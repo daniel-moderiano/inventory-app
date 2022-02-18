@@ -24,12 +24,12 @@
         <p>Do you really want to delete this Creator?</p>
         <form action="" method="post">
           <div class="form-group">
-            <input type="hidden" id="creatorid" name="creatorid" required value="<% creator._id %> " class="form-control">
+            <input type="hidden" id="creatorid" name="creatorid" required value="<%= creator._id %>" class="form-control">
           </div>
-          <button type="submit" class="btn btn-error">Delete</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       <% } %>
-
     </div>
   </section>
+
 <%- include('footer')%>

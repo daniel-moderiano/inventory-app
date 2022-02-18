@@ -1,10 +1,11 @@
 const Creator = require('../models/creator');
 const async = require('async');
 const NFT = require('../models/nft');
+const mongoose = require('mongoose');
 const { body, validationResult } = require("express-validator");
 
 // Display list of all creators.
-exports.creatorList = function (req, res) {
+exports.creatorList = function (req, res, next) {
   // Find all creator documents in db and sort by name
   Creator.find({})
     .sort({ name: 1 })
@@ -16,7 +17,7 @@ exports.creatorList = function (req, res) {
 };
 
 // Display details page for specific creator.
-exports.creatorDetail = function (req, res) {
+exports.creatorDetail = function (req, res, next) {
   // Need to find not only the collection, but all NFTs in that collection
   async.parallel({
     creator: function (callback) {
@@ -89,7 +90,7 @@ exports.addCreatorPost = [
 ];
 
 // Display Creator delete form on GET.
-exports.deleteCreatorGet = function(req, res) {
+exports.deleteCreatorGet = function(req, res, next) {
   // Find both the creator in question, and any NFTs the creator has created/is associated with
   async.parallel({
     creator: function (callback) {
@@ -109,8 +110,30 @@ exports.deleteCreatorGet = function(req, res) {
 };
 
 // Handle Creator delete on POST.
-exports.deleteCreatorPost = function(req, res) {
-  res.send('NOT IMPLEMENTED: Creator delete POST');
+exports.deleteCreatorPost = function(req, res, next) {
+  // Find both the creator in question, and any NFTs the creator has created/is associated with
+  async.parallel({
+    creator: function (callback) {
+      Creator.findById(req.body.creatorid.toString()).exec(callback);
+    },
+    creatorsNfts: function (callback) {
+      NFT.find({ 'creator': req.body.creatorid.toString() }).exec(callback);
+    },
+  }, function (err, results) {
+    if (err) { return next(err) }
+    // Success
+    if (results.creatorsNfts.length > 0) {
+      // Creator still has NFTs remaining. Render in same way as for GET route
+      res.render('creatorDelete', { title: `Delete Creator '${results.creator.name}'`, creator: results.creator, creatorsNfts: results.creatorsNfts })
+    } else {
+      // Creator has no remaining NFTs. Delete from db and redirect to list of creators
+      Creator.findByIdAndRemove(req.body.creatorid.toString(), function deleteCreator (err) {
+        if (err) { return next(err); }
+        // Success, go to creator list
+        res.redirect('/creators');
+      })
+    }
+  });
 };
 
 // Display Creator update form on GET.
